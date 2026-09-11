@@ -1,0 +1,16 @@
+{
+  "name": "sm2-fsrs-bridge",
+  "version": "0.1.0",
+  "description": "Convert spaced repetition scheduling data between Anki's SM-2 fields and FSRS memory states",
+  "type": "module",
+  "bin": {
+    "sm2-fsrs-bridge": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
