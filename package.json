@@ -7,7 +7,8 @@
     "sm2-fsrs-bridge": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "tsc && node --test dist"
   },
   "engines": {
     "node": ">=18"

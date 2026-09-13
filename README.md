@@ -73,7 +73,13 @@ No dependencies are installed for this project - it's standard library
 only. Compile with `tsc` (from a TypeScript install you already have),
 or run `src/cli.ts` directly with any TS-capable runtime.
 
+## Testing
+
+`npm test` compiles with `tsc` and runs the suite with Node's built-in
+test runner (`node --test`) - no test framework dependency either.
+
 ## Status
 
 Early skeleton. Parsing, validation, and both conversion directions
-work; see the roadmap in the issue tracker for what's still missing.
+work, with test coverage for the strict/lenient parsing paths; see the
+roadmap in the issue tracker for what's still missing.
