@@ -6,6 +6,7 @@ import {
   formatFsrsJson,
   parseFsrsJson,
   formatSm2Tsv,
+  formatDryRunSummary,
   sm2ToFsrs,
   fsrsToSm2,
 } from './convert.js';
@@ -16,6 +17,7 @@ interface Args {
   output?: string;
   epoch?: string;
   lenient: boolean;
+  dryRun: boolean;
 }
 
 const USAGE = `sm2-fsrs-bridge <to-fsrs|to-sm2> [options]
@@ -32,6 +34,9 @@ Options:
   --lenient        skip malformed rows and fill in defaults instead of
                    failing, and fall back to today's date when --epoch
                    is missing. Warnings are printed to stderr.
+  --dry-run        parse and validate the input, print a summary of how
+                   many records would be written and any warnings, but
+                   don't write output anywhere.
 
 Examples:
   sm2-fsrs-bridge to-fsrs --input cards.tsv --epoch 2021-03-14 > cards.json
@@ -44,7 +49,7 @@ function parseArgs(argv: string[]): Args {
     throw new ConversionError(`unknown command "${command ?? ''}"\n\n${USAGE}`);
   }
 
-  const args: Args = { command, lenient: false };
+  const args: Args = { command, lenient: false, dryRun: false };
   for (let i = 0; i < rest.length; i++) {
     const flag = rest[i];
     switch (flag) {
@@ -59,6 +64,9 @@ function parseArgs(argv: string[]): Args {
         break;
       case '--lenient':
         args.lenient = true;
+        break;
+      case '--dry-run':
+        args.dryRun = true;
         break;
       default:
         throw new ConversionError(`unrecognized option "${flag}"`);
@@ -111,11 +119,19 @@ function main(): void {
 
   if (args.command === 'to-fsrs') {
     const { records, warnings } = parseSm2Tsv(input, opts);
+    if (args.dryRun) {
+      process.stdout.write(formatDryRunSummary(records.length, warnings));
+      return;
+    }
     warnings.forEach((w) => process.stderr.write(`warning: ${w}\n`));
     const converted = records.map((r) => sm2ToFsrs(r, epoch));
     writeOutput(args.output, formatFsrsJson(converted));
   } else {
     const { records, warnings } = parseFsrsJson(input, opts);
+    if (args.dryRun) {
+      process.stdout.write(formatDryRunSummary(records.length, warnings));
+      return;
+    }
     warnings.forEach((w) => process.stderr.write(`warning: ${w}\n`));
     const converted = records.map((r) => fsrsToSm2(r, epoch));
     writeOutput(args.output, formatSm2Tsv(converted));

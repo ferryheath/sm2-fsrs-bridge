@@ -311,6 +311,21 @@ export function formatFsrsJson(records: FsrsRecord[]): string {
   return JSON.stringify(records, null, 2) + '\n';
 }
 
+// ---- dry-run reporting ----
+
+export function formatDryRunSummary(recordCount: number, warnings: string[]): string {
+  const lines = [`dry run: ${recordCount} record${recordCount === 1 ? '' : 's'} would be written, nothing written`];
+  if (warnings.length === 0) {
+    lines.push('no warnings');
+  } else {
+    lines.push(`${warnings.length} warning${warnings.length === 1 ? '' : 's'}:`);
+    for (const w of warnings) {
+      lines.push(`  ${w}`);
+    }
+  }
+  return lines.join('\n') + '\n';
+}
+
 // ---- Record-level conversion ----
 
 export function sm2ToFsrs(record: Sm2Record, epoch: Date): FsrsRecord {

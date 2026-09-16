@@ -67,6 +67,11 @@ warning on stderr) instead of aborting, missing optional fields get
 sensible defaults, out-of-range values are clamped, and a missing
 `--epoch` falls back to today's date.
 
+Pass `--dry-run` to check a file before committing to it: it parses and
+validates the input, prints how many records would be written and any
+warnings, and writes nothing. Combine it with `--lenient` to see what a
+lenient run would clamp or default before actually doing it.
+
 ## Building
 
 No dependencies are installed for this project - it's standard library

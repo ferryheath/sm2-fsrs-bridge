@@ -8,6 +8,7 @@ import {
   formatSm2Tsv,
   parseFsrsJson,
   formatFsrsJson,
+  formatDryRunSummary,
   sm2ToFsrs,
   fsrsToSm2,
 } from './convert.js';
@@ -250,4 +251,24 @@ test('fsrsToSm2 recovers the same day number sm2ToFsrs anchored', () => {
   const back = fsrsToSm2(fsrs, EPOCH);
   assert.equal(back.due, original.due);
   assert.equal(back.intervalDays, original.intervalDays);
+});
+
+// ---- dry-run summary ----
+
+test('formatDryRunSummary reports no warnings and pluralizes record count', () => {
+  const oneRecord = formatDryRunSummary(1, []);
+  assert.match(oneRecord, /1 record would be written/);
+  assert.match(oneRecord, /no warnings/);
+
+  const manyRecords = formatDryRunSummary(3, []);
+  assert.match(manyRecords, /3 records would be written/);
+});
+
+test('formatDryRunSummary lists each warning and pluralizes the count', () => {
+  const summary = formatDryRunSummary(2, ['line 3: something odd']);
+  assert.match(summary, /1 warning:/);
+  assert.match(summary, /line 3: something odd/);
+
+  const summaryTwo = formatDryRunSummary(2, ['a', 'b']);
+  assert.match(summaryTwo, /2 warnings:/);
 });
