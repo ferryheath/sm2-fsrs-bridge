@@ -78,6 +78,13 @@ No dependencies are installed for this project - it's standard library
 only. Compile with `tsc` (from a TypeScript install you already have),
 or run `src/cli.ts` directly with any TS-capable runtime.
 
+Installing the published package (`npm install -g sm2-fsrs-bridge`) does
+not require a TypeScript toolchain on the consumer's end: `prepublishOnly`
+builds `dist/` before the package is published, and `dist/` is what
+actually ships (`.gitignore` keeps it out of the repo, but the `files`
+field puts it in the npm tarball regardless). Installing straight from
+this git repository still runs `prepare`, which builds it locally.
+
 ## Testing
 
 `npm test` compiles with `tsc` and runs the suite with Node's built-in
